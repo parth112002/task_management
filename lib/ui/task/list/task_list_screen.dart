@@ -40,10 +40,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
     return AppBar(
       title: Text('Task Management System'),
       actions: [
-        GestureDetector(
-          onTap: _controller.syncTasks,
-          child: Icon(Icons.sync),
-        )
+        IconButton(
+          icon: Icon(Icons.sync),
+          onPressed: _controller.syncTasks,
+        ),
       ],
     );
   }
@@ -64,20 +64,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
         itemCount: _controller.tasks.length,
         itemBuilder: (context, index) {
           final task = _controller.tasks[index];
-          return ListTile(
-            leading: task.isDirty ? CircleAvatar(
-              backgroundColor: Colors.green,
-              radius: 5,
-            ) : SizedBox(),
-            title: Text(task.title),
-            subtitle: Text(task.description),
-            trailing: GestureDetector(
-              onTap: () => _controller.navigateToAddEditScreen(
-                context: context,
-                isAddTask: false,
-                task: task,
+          return GestureDetector(
+            onTap: () => _controller.navigateToAddEditScreen(
+              context: context,
+              isAddTask: false,
+              task: task,
+            ),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: task.status == _controller.taskStatus[0] ? Colors.green : Colors.grey,
+                child: Text(task.status == _controller.taskStatus[0] ? 'P' : 'C'),
               ),
-              child: Icon(Icons.edit),
+              title: Text(task.title),
+              subtitle: Text(task.description),
+              trailing: Text(task.isDirty ? 'Not sync' : 'synced'),
             ),
           );
         },

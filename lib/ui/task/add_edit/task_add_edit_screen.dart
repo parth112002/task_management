@@ -23,12 +23,20 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
   late final TextEditingController _titleTextController;
   late final TextEditingController _descriptionTextController;
   late final GlobalKey<FormState> _formKey;
+
   @override
   void initState() {
-    _controller = Get.put(TaskController());
+    _controller = Get.find<TaskController>();
+
     _titleTextController = TextEditingController();
     _descriptionTextController = TextEditingController();
     _formKey = GlobalKey<FormState>();
+
+    if (!widget.isAddTask && widget.task != null) {
+      _titleTextController.text = widget.task!.title;
+      _descriptionTextController.text = widget.task!.description;
+      _controller.selectedTaskStatus.value = widget.task!.status;
+    }
     super.initState();
   }
 
@@ -36,7 +44,6 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
   void dispose() {
     _titleTextController.dispose();
     _descriptionTextController.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
@@ -70,7 +77,7 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
     return TextFormField(
       controller: _titleTextController,
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           return 'Title is required';
         }
         return null;
@@ -120,7 +127,7 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
             }
           }
         },
-        child: Text('Save'),
+        child: const Text('Save'),
       ),
     );
   }
