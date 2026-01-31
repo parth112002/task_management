@@ -1,6 +1,6 @@
 {
-    "name": "demo",
-    "short_name": "demo",
+    "name": "Task Management System",
+    "short_name": "TMS",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

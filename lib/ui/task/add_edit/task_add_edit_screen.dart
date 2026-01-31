@@ -56,17 +56,20 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
       body: SafeArea(
         child: Form(
           key: _formKey,
-          child: Column(
-            children: [
-              _verticalSpaceBetweenWidgets(),
-              _titleField(),
-              _verticalSpaceBetweenWidgets(),
-              _descriptionField(),
-              _verticalSpaceBetweenWidgets(),
-              _taskStatusDropDown(),
-              _verticalSpaceBetweenWidgets(),
-              _saveButton(),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              children: [
+                _verticalSpaceBetweenWidgets(),
+                _titleField(),
+                _verticalSpaceBetweenWidgets(),
+                _descriptionField(),
+                _verticalSpaceBetweenWidgets(),
+                _taskStatusDropDown(),
+                _verticalSpaceBetweenWidgets(),
+                _saveButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -76,6 +79,7 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
   Widget _titleField() {
     return TextFormField(
       controller: _titleTextController,
+      decoration: InputDecoration(hint: Text('Title')),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Title is required';
@@ -88,6 +92,7 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
   Widget _descriptionField() {
     return TextFormField(
       controller: _descriptionTextController,
+      decoration: InputDecoration(hint: Text('Description')),
     );
   }
 

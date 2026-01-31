@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import './ui/task/list/task_list_screen.dart';
 import './service/task_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // to close db when app is close
   WidgetsBinding.instance.addObserver(AppLifecycleObserver());
 
@@ -15,7 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Task Management System',
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),

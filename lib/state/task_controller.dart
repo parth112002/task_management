@@ -15,9 +15,11 @@ class TaskController extends GetxController {
 
   @override
   void onInit() {
-    _loadingDialogEver();
-    _loadTasks();
     super.onInit();
+    _loadingDialogEver();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadTasks();
+    });
   }
 
   void _loadingDialogEver() {
@@ -53,13 +55,16 @@ class TaskController extends GetxController {
       );
 
       final result = await repo.insertTask(task);
-      if (result == 1) {
-        await _loadTasks();
+      if (result > 0) {
+        loadingMessage.value = '';
+
         StaticFunctions.toastMessage(
           msg: 'Task added successfully',
           isSuccessMsg: true,
         );
+
         Get.back();
+        await _loadTasks();
       } else {
         StaticFunctions.toastMessage(
           msg: 'Task is not added. Something went wrong.',
@@ -94,6 +99,7 @@ class TaskController extends GetxController {
       final result = await repo.updateTask(updatedTask);
 
       if (result == 1) {
+        loadingMessage.value = '';
         await _loadTasks();
         StaticFunctions.toastMessage(
           msg: 'Task edited successfully',
@@ -134,19 +140,24 @@ class TaskController extends GetxController {
         }
       }
       if (!isError) {
-        await _loadTasks();
+        await Future.delayed(Duration(seconds: 2));
+
+        loadingMessage.value = '';
+
         StaticFunctions.toastMessage(
           msg: 'Task sync successfully',
           isSuccessMsg: true,
         );
+
+        await _loadTasks();
       } else {
         StaticFunctions.toastMessage(msg: 'Some Task are not sync');
       }
     } catch (e) {
       StaticFunctions.toastMessage(msg: 'Something went wrong');
+    } finally {
+      loadingMessage.value = '';
     }
-
-    loadingMessage.value = '';
   }
 
   void onTaskStatusDropDownChange(String? value) {
