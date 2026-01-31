@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class StaticFunctions {
@@ -30,4 +31,15 @@ class StaticFunctions {
     );
   }
 
+  static void toastMessage({required String msg, bool isSuccessMsg = false}) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: isSuccessMsg ? Colors.green : Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
 }

@@ -103,15 +103,15 @@ class _TaskAddEditScreenState extends State<TaskAddEditScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           if (_formKey.currentState!.validate()) {
             if (widget.isAddTask) {
-              _controller.addTask(
+              await _controller.addTask(
                 _titleTextController.text.trim(),
                 _descriptionTextController.text.trim(),
               );
             } else {
-              _controller.updateTask(
+              await _controller.updateTask(
                 widget.task!,
                 title: _titleTextController.text.trim(),
                 description: _descriptionTextController.text.trim(),

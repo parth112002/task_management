@@ -31,68 +31,120 @@ class TaskController extends GetxController {
   }
 
   Future<void> _loadTasks() async {
-    loadingMessage.value = 'Loading....';
-    tasks.value = await repo.getTasks();
+    try {
+      loadingMessage.value = 'Loading....';
+      tasks.value = await repo.getTasks();
+    } catch (e) {
+      StaticFunctions.toastMessage(msg: 'Something went wrong');
+    }
     loadingMessage.value = '';
   }
 
   Future<void> addTask(String title, String description) async {
-    loadingMessage.value = 'Saving task....';
-    final task = Task(
-      title: title,
-      description: description,
-      status: selectedTaskStatus.value,
-      lastUpdatedAt: DateTime.now(),
-      lastSyncedAt: null,
-      isDirty: true,
-    );
+    try {
+      loadingMessage.value = 'Saving task....';
+      final task = Task(
+        title: title,
+        description: description,
+        status: selectedTaskStatus.value,
+        lastUpdatedAt: DateTime.now(),
+        lastSyncedAt: null,
+        isDirty: true,
+      );
 
-    await repo.insertTask(task);
-    await _loadTasks();
+      final result = await repo.insertTask(task);
+      if (result == 1) {
+        await _loadTasks();
+        StaticFunctions.toastMessage(
+          msg: 'Task added successfully',
+          isSuccessMsg: true,
+        );
+        Get.back();
+      } else {
+        StaticFunctions.toastMessage(
+          msg: 'Task is not added. Something went wrong.',
+        );
+      }
+    } catch (e) {
+      StaticFunctions.toastMessage(msg: 'Something went wrong');
+    }
 
     loadingMessage.value = '';
   }
 
   Future<void> updateTask(
-      Task task, {
-        required String title,
-        required String description,
-        required String status,
-      }) async {
-    loadingMessage.value = 'Editing task....';
+    Task task, {
+    required String title,
+    required String description,
+    required String status,
+  }) async {
+    try {
+      loadingMessage.value = 'Editing task....';
 
-    final updatedTask = Task(
-      id: task.id,
-      title: title,
-      description: description,
-      status: status,
-      lastUpdatedAt: DateTime.now(),
-      lastSyncedAt: task.lastSyncedAt,
-      isDirty: true,
-    );
+      final updatedTask = Task(
+        id: task.id,
+        title: title,
+        description: description,
+        status: status,
+        lastUpdatedAt: DateTime.now(),
+        lastSyncedAt: task.lastSyncedAt,
+        isDirty: true,
+      );
 
-    await repo.updateTask(updatedTask);
-    await _loadTasks();
+      final result = await repo.updateTask(updatedTask);
+
+      if (result == 1) {
+        await _loadTasks();
+        StaticFunctions.toastMessage(
+          msg: 'Task edited successfully',
+          isSuccessMsg: true,
+        );
+        Get.back();
+      } else {
+        StaticFunctions.toastMessage(
+          msg: 'Task is not edited. Something went wrong.',
+        );
+      }
+    } catch (e) {
+      StaticFunctions.toastMessage(msg: 'Something went wrong');
+    }
 
     loadingMessage.value = '';
   }
 
   Future<void> syncTasks() async {
-    loadingMessage.value = 'Syncing tasks....';
+    try {
+      loadingMessage.value = 'Syncing tasks....';
 
-    for (final task in tasks.where((t) => t.isDirty)) {
-      final syncedTask = Task(
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        status: task.status,
-        lastUpdatedAt: task.lastUpdatedAt,
-        lastSyncedAt: DateTime.now(),
-        isDirty: false,
-      );
-      await repo.updateTask(syncedTask);
+      bool isError = false;
+      for (final task in tasks.where((t) => t.isDirty)) {
+        final syncedTask = Task(
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          status: task.status,
+          lastUpdatedAt: task.lastUpdatedAt,
+          lastSyncedAt: DateTime.now(),
+          isDirty: false,
+        );
+        final result = await repo.updateTask(syncedTask);
+
+        if (result != 1) {
+          isError = true;
+        }
+      }
+      if (!isError) {
+        await _loadTasks();
+        StaticFunctions.toastMessage(
+          msg: 'Task sync successfully',
+          isSuccessMsg: true,
+        );
+      } else {
+        StaticFunctions.toastMessage(msg: 'Some Task are not sync');
+      }
+    } catch (e) {
+      StaticFunctions.toastMessage(msg: 'Something went wrong');
     }
-    await _loadTasks();
 
     loadingMessage.value = '';
   }
@@ -106,14 +158,6 @@ class TaskController extends GetxController {
     required bool isAddTask,
     Task? task,
   }) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TaskAddEditScreen(
-          isAddTask: isAddTask,
-          task: task,
-        ),
-      ),
-    );
+    Get.to(() => TaskAddEditScreen(isAddTask: isAddTask, task: task));
   }
 }

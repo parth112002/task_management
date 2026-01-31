@@ -38,6 +38,7 @@ dependencies:
   intl: ^0.20.2
   path: ^1.9.1
   get: ^4.7.3
+  fluttertoast: ^9.0.0
 
 dev_dependencies:
   flutter_test:

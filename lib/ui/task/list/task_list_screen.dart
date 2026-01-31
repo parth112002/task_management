@@ -60,7 +60,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Widget _taskList() {
     return Obx(
-      () => ListView.builder(
+      () => _controller.tasks.isNotEmpty ? ListView.builder(
         itemCount: _controller.tasks.length,
         itemBuilder: (context, index) {
           final task = _controller.tasks[index];
@@ -81,7 +81,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
           );
         },
-      ),
+      ) : Center(child: Text('No Task found')),
     );
   }
 }
